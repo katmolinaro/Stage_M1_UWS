@@ -57,9 +57,11 @@ UWS_Paris_sf <- st_as_sf(UWS_Paris, coords = c("Longitude", "Latitude"), crs = s
 UWS_Paris_sf <- st_transform(UWS_Paris_sf, crs =  2154)
 plot(UWS_Paris_sf["Total wildness"])
 
-st_crs(UWS_Paris_sf)
-# Import IRIS data ----
+# st_crs(UWS_Paris_sf)
+
+# Temporary : Import IRIS data as XLS ----
 UWS_iris = read_excel(path = "Raw/UWS_iris.xlsx",
+                      sheet = "V1_iris_réattribués",
                       na = c("","NA"))
 
 # Import shapefile IRIS ----
@@ -68,9 +70,12 @@ IRIS_DATA <- st_read("Raw/IRIS_DATA/IRIS_DATA_ESRI.shp")
 plot(IRIS_DATA["X_revenus_m"])
 
 
-# TODO Match IRIS data with UWS data ----
-uws_paris_iris <- st_join(UWS_Paris_sf, left = TRUE, IRIS_DATA)
+# TO DO Match IRIS data with UWS data ----
+uws_paris_iris <- st_join(UWS_Paris_sf,
+                          IRIS_DATA,
+                          left = TRUE)
 plot(uws_paris_iris["X_revenus_m"])
+
 ggplot()+
   geom_sf(data = IRIS_DATA, fill = "red", color = "blue")+
   geom_sf(data = UWS_Paris_sf , aes(color = "UWS_subj"), size =3)
