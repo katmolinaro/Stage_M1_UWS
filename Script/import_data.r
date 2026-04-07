@@ -39,9 +39,13 @@ Nineteen = read_excel(path = "Raw/260218_UWS.xlsx",
                      skip = 1)
 names(Nineteen) = column_names$Column_corr
 
+Fifth = read_excel(path = "Raw/260218_UWS.xlsx",
+                      sheet = "5e",
+                      skip = 1)
+names(Fifth) = column_names$Column_corr
 
 ## bind all data tables together: ----
-UWS_Paris <- rbind(Ivry,Neuilly,Seven,Nineteen)
+UWS_Paris <- rbind(Ivry,Neuilly,Seven,Nineteen,Fifth)
 
 
 
