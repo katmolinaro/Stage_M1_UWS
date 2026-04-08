@@ -12,6 +12,15 @@ uws_iris_clean <- uws_paris_iris %>%
 cat("Number of lines before the filter :", nrow(uws_paris_iris), "\n")
 cat("Number of lines after the filter :", nrow(uws_iris_clean), "\n")
 
+#TEST - selection of field points along a wildness gradient, inside a district, with similar income ----
+
+field <- uws_iris_clean %>%
+  filter(
+    Arr == "Ivry",   # keep if we have irvy
+    X_revenus_m > 17000 & X_revenus_m < 22000         # keep if 17000<income<22000
+  )
+
+nrow(field)
 
 # Vizualise distribtuion of scores ----
 
