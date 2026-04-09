@@ -19,8 +19,15 @@ cat("Number of lines after the filter :", nrow(uws_iris_clean), "\n")
 
 boxplot(`Total wildness`  ~ Arr , 
         data = uws_iris_clean )
+
+ggplot(uws_iris_clean, aes(x=Arr, y=`Total wildness`, fill=Arr)) +
+  geom_boxplot()
+
 boxplot(`X_revenus_m`  ~ Arr , 
         data = uws_iris_clean )
+
+ggplot(uws_iris_clean, aes(x=Arr, y=`X_revenus_m`, fill=Arr)) +
+  geom_boxplot()
 
 # Graph sur tout paris
 ggplot2::ggplot(data = uws_iris_clean,
@@ -67,11 +74,12 @@ f3 = lm(`Total wildness` ~  `X_revenus_m`*Arr ,
         data = uws_iris_clean )
 summary(f3)
 anova(f3)
+
 plot(f3)
 hist(residuals(f3))
 
 
-anova(f1b,f3)
+anova(f1b,f2,f3)
 
 # test modèle linéaire mixte
 f0 = lme4::lmer(`Total wildness`  ~ 1 + (1|Arr) , 
@@ -79,7 +87,8 @@ f0 = lme4::lmer(`Total wildness`  ~ 1 + (1|Arr) ,
 
 f1 = lme4::lmer(`Total wildness`  ~ `X_revenus_m` + (1|Arr) , 
           data = uws_iris_clean )
-summary(f1a) 
+
+summary(f1) 
 
 f1 = lme4::lmer(`Total wildness`  ~ `X_revenus_m` + (1|Arr) , 
                 data = uws_iris_clean )
@@ -89,3 +98,12 @@ anova(f0, f1)
 
 plot(DHARMa::simulateResiduals(f1))
 plot(f1)
+
+
+
+
+
+
+
+
+

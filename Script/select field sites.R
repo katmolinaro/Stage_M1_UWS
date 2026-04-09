@@ -10,9 +10,23 @@ field <- uws_iris_clean %>%
 
 nrow(field)
 
+#Selection of field points ----
 
 sept <- uws_iris_clean %>%
   filter(Arr == "7e") %>%
   arrange(desc(`Total wildness`))
 
-spt_field = sept[floor(seq(1, nrow(sept), length.out = 10)), ]
+sept_field = sept[floor(seq(1, nrow(sept), length.out = 10)), ]
+
+write.table(sept_field, file = "field_7th.txt", sep = "\t", dec = ",", row.names = FALSE)
+
+
+neuf <- uws_iris_clean %>%
+  filter(Arr == "19e") %>%
+  arrange(desc(`Total wildness`))
+
+neuf_field = neuf[floor(seq(1, nrow(neuf), length.out = 10)), ]
+
+write.table(neuf_field, file = "field_19th.txt", sep = "\t", dec = ",", row.names = FALSE)
+
+
