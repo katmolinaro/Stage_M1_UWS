@@ -80,6 +80,7 @@ uws_paris_iris <- st_join(UWS_Paris_sf,
                           IRIS_DATA,
                           left = TRUE)
 plot(uws_paris_iris["X_revenus_m"])
+plot(uws_paris_iris["Total wildness"])
 
 ggplot()+
   geom_sf(data = IRIS_DATA, fill = "red", color = "blue")+

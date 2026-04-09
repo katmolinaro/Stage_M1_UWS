@@ -22,6 +22,13 @@ field <- uws_iris_clean %>%
 
 nrow(field)
 
+
+sept <- uws_iris_clean %>%
+  filter(Arr == "7e") %>%
+  arrange(desc(`Total wildness`))
+  
+spt_field = sept[floor(seq(1, nrow(sept), length.out = 10)), ]
+
 # Vizualise distribtuion of scores ----
 
 boxplot(`Total wildness`  ~ Arr , 
