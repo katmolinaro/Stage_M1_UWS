@@ -22,9 +22,11 @@ source("Script/import_UWS_google.r")
 
 ## Field UWS ----
 
-source("Script/import_vegetation.R")
+source("Script/import_UWS_field.R")
 
 ## Field vegetation surveys ----
+
+source("Script/import_vegetation.R")
 
 # Transform data ----
 
