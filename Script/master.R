@@ -33,9 +33,9 @@ source("Script/import_vegetation.R")
 ## UWS google ----
 ## UWS terrain ----
 
-## Calculate Richness ----
+## Calculate indices (richness, etc.) for each transect ----
+source("Script/transect summary.R")
 
-source("Script/richness.R")
 
 # Analyses ----
 
