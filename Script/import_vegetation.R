@@ -16,5 +16,11 @@ veg_transect = read_excel(path = "Raw/SDMR_FIELD.xlsx",
                         sheet = "transect",
                         skip = 1)
 
+
 ## Replace NA by 0 in the type of microhabitat --> 0 means does not exist ----
 veg_transect[, 13:ncol(veg_transect)] [is.na(veg_transect[, 13:ncol(veg_transect)])] <- 0
+
+#Rename Buf to 5E_Buf
+
+veg_survey[veg_survey$Code_trottoir == "Buf","Code_trottoir"] <- "5E_Buf"
+veg_transect$Code_trottoir <- str_replace(string = veg_transect$Code_trottoir, pattern = "Buf", replacement = "5E_Buf")

@@ -8,6 +8,9 @@ library(readxl)
 library(stringr)
 library(ggplot2)
 library(sf)
+library(DHARMa)
+library(lme4)
+library(lmerTest)
 
 
 # import and clean data ----

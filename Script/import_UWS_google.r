@@ -55,12 +55,18 @@ UWS_Paris <- UWS_Paris %>%
 
 ## Extract coordinates into two columns ----
 UWS_Paris <- separate (UWS_Paris, col = Coords, into = c("Latitude", "Longitude"), sep = ",")
+
+#Correction non attributed sites ----
+UWS_Paris <- UWS_Paris %>% 
+  filter_out(Type == "PAS SUR MAPS")
+
+#Spatial object
 UWS_Paris_sf <- st_as_sf(UWS_Paris, coords = c("Longitude", "Latitude"), crs = st_crs(4326)) #the original crs is 4326 !!
 UWS_Paris_sf <- st_transform(UWS_Paris_sf, crs =  2154)
 # plot(UWS_Paris_sf["Total wildness"])
 # st_crs(UWS_Paris_sf)
 
-
+# 
 # Match IRIS data with UWS data ----
 
 uws_paris_iris <- st_join(UWS_Paris_sf,
@@ -80,4 +86,4 @@ write.csv(uws_paris_iris, file = "Clean_data/uws_google.csv")
 
 # clean environment ----
 
-rm(Ivry,Fifth,Nineteen,UWS_Paris_sf, UWS_Paris, Neuilly, Seven)
+rm(Ivry,Fifth,Nineteen,UWS_Paris_sf, Neuilly, Seven)
