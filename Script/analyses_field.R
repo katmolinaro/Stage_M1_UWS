@@ -4,8 +4,9 @@ library(DHARMa)
 library(lme4)
 library(lmerTest)
 library(ggplot2)
+library(glmmTMB)
 
-#Richness and UWS field ----
+# Richness and UWS field ----
 
 ## Graph ----
 ### Graph sur tout paris ----
@@ -54,18 +55,18 @@ ggplot2::ggplot(data = transect_indices,
 
 ## Test modèle linéaire simple ----
 
-f1a = lm(`richness`  ~ `Total wildness_field` , 
-         data = transect_indices )
+f1 = lm(`richness`  ~ `Total wildness_field` , 
+              data = transect_indices  )
+summary(f1)
+plot(DHARMa::simulateResiduals(f1))
+
+
+f1_pois = glm(`richness`  ~ `Total wildness_field` , 
+         data = transect_indices, 
+         family = poisson  )
 summary(f1a)
-plot(f1a)
-
-f1b = lm(`Total wildness_field`  ~ `richness` , 
-         data = transect_indices )
-summary(f1b)
-plot(f1b)
-
-#les résidus sont...... bon
-
+plot(DHARMa::simulateResiduals(f1a))
+# pas terrible avec poisson
 
 # Richness and income ----
 
@@ -94,56 +95,47 @@ ggplot2::ggplot(data = transect_indices,
 
 ## Test ----
 ### Test linéaire simple ----
-f1a = aov(richness  ~ Arr_field ,
+f_arr = lm(richness  ~ Arr_field ,
           data = transect_indices )
 summary(f1a)
-TukeyHSD(f1a)
 
+### tester effet revenus
 
-### comparaison ----
-f1a = lm(richness  ~ Arr_field ,
-         data = transect_indices )
-summary(f1a)
+f1 = lm(`richness`  ~ `Total wildness_field` , 
+        data = filter(transect_indices, !is.na(X_revenus_m) ) )
 
 f1b = lm(richness  ~ `X_revenus_m` ,
          data = transect_indices )
 summary(f1b)
 
-f2 = lm(richness  ~ `X_revenus_m` + Arr_field  ,
+f2 = lm(richness  ~ `Total wildness_field` + X_revenus_m   ,
         data = transect_indices )
 summary(f2)
 anova(f2)
 
 
-f3 = lm(richness ~  `X_revenus_m`*Arr_field ,
+f3 = lm(richness ~  `Total wildness_field`*`X_revenus_m` ,
         data = transect_indices )
 summary(f3)
 anova(f3)
 
-plot(f3)
-hist(residuals(f3))
+f3b = lm(richness ~  `Total wildness_field`*Arr_field ,
+        data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f3b)
+anova(f3b)
 
+# comparaison de modèles
+anova(f1,f2,f3) 
+anova(f1,f3b)
 
-anova(f1b,f2,f3)
- 
-### test modèle linéaire mixte ----
-f0 = lme4::lmer(richness  ~ 1 + (1|Arr_field) ,
-                data = transect_indices )
+# test de l'interaction possible entre revenus et arrondissement sur richesse
 
-f1 = lme4::lmer(richness  ~ `X_revenus_m` + (1|Arr_field) ,
-                data = transect_indices )
-
-summary(f1)
-
-f1 = lme4::lmer(richness  ~ `X_revenus_m` + (1|Arr_field) ,
-                data = transect_indices )
-summary(f1a)
-
-anova(f0, f1)
-
-
-plot(DHARMa::simulateResiduals(f1))
-plot(f1)
+f4 = lm(richness ~ `X_revenus_m` * Arr_field ,
+        data = transect_indices )
+summary(f4)
+anova(f4)
+anova(f1b,f4)
+ # effet marginal
 
 
 
@@ -186,7 +178,18 @@ summary(transect_indices)
 #Median :1.8056
 #Mean   :1.9596
 
+# regression lineaire google vs field
 
+ggplot(data = transect_indices,
+       mapping = aes(x = `Total wildness_google`, y = `Total wildness_field`)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept =0 ) + 
+  ylim (0,5) + xlim (0,5)
+
+# test de correlation de spearman (correlation des rangs)
+cor.test( transect_indices$`Total wildness_google`, 
+          transect_indices$`Total wildness_field`,
+          method = 'spearman')
 
 #Composition and UWs & richness ----
 
