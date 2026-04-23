@@ -24,3 +24,13 @@ veg_transect[, 13:ncol(veg_transect)] [is.na(veg_transect[, 13:ncol(veg_transect
 
 veg_survey[veg_survey$Code_trottoir == "Buf","Code_trottoir"] <- "5E_Buf"
 veg_transect$Code_trottoir <- str_replace(string = veg_transect$Code_trottoir, pattern = "Buf", replacement = "5E_Buf")
+
+# Create habitat groups
+
+veg_survey <- veg_survey %>%
+  mutate(informal = (Caniveau + Fissure_bas_de_mur +Murs + Joints_de_transition + Chemin + Autres) > 0,
+         formal = (Pied_arbre_isole + Pelouse_arbre + Pelouse_sans + Massif_arbre + Massif_sans) > 0 )
+
+
+
+
