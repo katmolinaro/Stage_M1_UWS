@@ -20,6 +20,8 @@ veg_transect = read_excel(path = "Raw/SDMR_FIELD.xlsx",
 ## Replace NA by 0 in the type of microhabitat --> 0 means does not exist ----
 veg_transect[, 13:ncol(veg_transect)] [is.na(veg_transect[, 13:ncol(veg_transect)])] <- 0
 
+names(veg_transect) <- str_replace_all(names(veg_transect),pattern = " ", replacement = "_")
+
 #Rename Buf to 5E_Buf
 
 veg_survey[veg_survey$Code_trottoir == "Buf","Code_trottoir"] <- "5E_Buf"
@@ -31,6 +33,10 @@ veg_survey <- veg_survey %>%
   mutate(informal = (Caniveau + Fissure_bas_de_mur +Murs + Joints_de_transition + Chemin + Autres) > 0,
          formal = (Pied_arbre_isole + Pelouse_arbre + Pelouse_sans + Massif_arbre + Massif_sans) > 0 )
 
+veg_transect <- veg_transect %>%
+  mutate(informal = (Caniveau + Fissure_de_bas_de_mur +Murs + Joints_de_transition + Chemins + Autres),
+         formal = (`Pied_d'arbre_isolé` + Pelouse_arbre + Pelouse_Sans + Massif_arbre + Massif_sans) )
 
 
+hist(veg_transect$formal)
 

@@ -1,6 +1,6 @@
 # UWS google and UWS field analysis ----
 
-## Transform the table ----
+# Transform the table ----
 
 #maybe not the most smart thing to do but my brain is fixed on this method
 
@@ -20,7 +20,7 @@ ggplot(uws_comparaison, aes(x = Traitement, y = Total_wildness, group = Code_tro
        color = "Code trottoir")
 
 
-## Test ----
+### Test ----
 
 #test non-paramétrique pour données appariées de wilcoxon
 
@@ -36,7 +36,7 @@ summary(transect_indices)
 #Median :1.8056
 #Mean   :1.9596
 
-# regression lineaire google vs field
+## Regression lineaire google vs field ----
 
 ggplot(data = transect_indices,
        mapping = aes(x = `Total wildness_google`, y = `Total wildness_field`)) +
@@ -44,7 +44,27 @@ ggplot(data = transect_indices,
   geom_abline(slope = 1, intercept =0 ) + 
   ylim (0,5) + xlim (0,5)
 
-# test de correlation de spearman (correlation des rangs)
+### test de correlation de spearman (correlation des rangs) ----
 cor.test( transect_indices$`Total wildness_google`, 
           transect_indices$`Total wildness_field`,
           method = 'spearman')
+
+
+#RESCORED ----
+
+## Regression lineaire google vs field ----
+
+ggplot(data = transect_indices,
+       mapping = aes(x = `Total wildness`, y = `Total wildness_field`)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept =0 ) + 
+  ylim (0,5) + xlim (0,5)
+
+## test de correlation de spearman (correlation des rangs) ----
+cor.test( transect_indices$`Total wildness`, 
+          transect_indices$`Total wildness_field`,
+          method = 'spearman')
+
+
+
+

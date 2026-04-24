@@ -31,10 +31,11 @@ source("Script/import_UWS_field.R")
 
 source("Script/import_vegetation.R")
 
-# Transform data ----
+## Rescoring
 
-## UWS google ----
-## UWS terrain ----
+source("Script/import_rescoring.R")
+
+# Transform data ----
 
 ## Calculate indices (richness, etc.) for each transect ----
 source("Script/transect summary.R")

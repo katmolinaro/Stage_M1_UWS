@@ -105,8 +105,8 @@ plot(DHARMa::simulateResiduals(f1))
 f1_pois = glm(`richness`  ~ `Total wildness_field` , 
          data = transect_indices, 
          family = poisson  )
-summary(f1a)
-plot(DHARMa::simulateResiduals(f1a))
+summary(f1_pois)
+plot(DHARMa::simulateResiduals(f1_pois))
 # pas terrible avec poisson
 
 
@@ -120,8 +120,8 @@ plot(DHARMa::simulateResiduals(f1))
 hist(f1$residuals)
 
 
-# f1_pois = glm(sp_density  ~ `Total wildness_field` , 
-#               data = transect_indices, 
+# f1_pois = glm(sp_density  ~ `Total wildness_field` ,
+#               data = transect_indices,
 #               family = poisson  )
 # summary(f1_pois)
 # plot(DHARMa::simulateResiduals(f1_pois))
@@ -218,6 +218,33 @@ anova(f1b,f4)
 
 
 
+
+
+
+# Richness and vegetalisation ----
+
+# TODO: tester aussi comptage des habitats formels
+
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = as.factor(Type_field),
+                              y = richness
+                )
+) +
+  geom_boxplot()
+
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = as.factor(Type_field),
+                              y = richness_informal
+                )
+) +
+  geom_boxplot()
+
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = as.factor(Type_field),
+                              y = `Total wildness_field`
+                )
+) +
+  geom_boxplot()
 
 
 #Composition and UWs & richness ----

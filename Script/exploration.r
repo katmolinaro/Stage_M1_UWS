@@ -88,7 +88,7 @@ f0 = lme4::lmer(`Total wildness`  ~ 1 + (1|Arr) ,
 f1 = lme4::lmer(`Total wildness`  ~ `X_revenus_m` + (1|Arr) , 
           data = uws_iris_clean )
 
-summary(f1) 
+summary(f1) =
 
 f1 = lme4::lmer(`Total wildness`  ~ `X_revenus_m` + (1|Arr) , 
                 data = uws_iris_clean )
@@ -99,6 +99,18 @@ anova(f0, f1)
 plot(DHARMa::simulateResiduals(f1))
 plot(f1)
 
+
+# Effet de la vegetalisation ----
+
+ggplot2::ggplot(data = uws_iris_clean,
+                mapping = aes(x = as.factor(Type),
+                              y = `Total wildness`,
+                              colour = Arr
+                )
+) +
+  geom_boxplot(varwidth = TRUE) +
+  facet_wrap('Arr')
+  
 
 
 
