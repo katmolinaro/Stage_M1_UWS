@@ -24,6 +24,20 @@ cross_UWS <- uws_paris_iris %>%
 
 ## Comparaison  katia vs Maria ----
 
+# mean absolute difference: 
+mean(abs(cross_UWS$`Total wildness_maria`- cross_UWS$`Total wildness`), na.rm = TRUE)
+
+
+## Paired t-test ----
+# mean absolute difference: 
+mean(cross_UWS$`Total wildness_maria`- cross_UWS$`Total wildness`, na.rm = TRUE)
+# on average scores are -0.13 points less for Maria...
+
+t.test(cross_UWS$`Total wildness_maria`, cross_UWS$`Total wildness`,
+       alternative = "less",
+       paired = TRUE)
+# No significant trend in the difference = no systematic under or over scoring. 
+
 ## test de correlation de spearman (correlation des rangs) ----
 cor.test(cross_UWS$`Total wildness`, 
          cross_UWS$`Total wildness_maria`,
@@ -33,12 +47,16 @@ cor.test(cross_UWS$`Total wildness`,
 summary( cross_reg <- lm(`Total wildness_maria`~`Total wildness`, data = cross_UWS))
 plot(simulateResiduals(cross_reg)) # not perfect
 
-summary( cross_reg_0 <- lm(`Total wildness_maria`~0 +`Total wildness`, data = cross_UWS))
-plot(simulateResiduals(cross_reg_0)) # not perfect
+# mean error:
+mean(abs(residuals(cross_reg)))
+
 
 # R2 = 0.65 ; Equation : UWS_maria =  -0,2703 + 1,0633 * UWS_katia
 # Regression not horrible but not very tight.
 # Need to check against rescored katia data
+
+summary( cross_reg_0 <- lm(`Total wildness_maria`~0 +`Total wildness`, data = cross_UWS))
+plot(simulateResiduals(cross_reg_0)) # not perfect
 
 ## SMA (Single major axis estimation) ----
 library(smatr)
