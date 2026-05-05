@@ -62,9 +62,15 @@ plot(simulateResiduals(cross_reg_0)) # not perfect
 library(smatr)
 
 #### Free intercept :  ----
-(cross_sma <- sma(`Total wildness_maria`~ `Total wildness`, data = cross_UWS))
+(cross_sma <- sma(`Total wildness_maria`~ `Total wildness`, data = cross_UWS,
+                  slope.test = 1,
+                  elev.test = 0))
+# slope not diff from 1, Intercept not diff. from 0, but P values are marinal (0.060-0.076)
+# Still pretty reassurring.
 plot(cross_sma)
 plot(cross_sma , which = "residual")
+
+
 
 ### Regression SMA forced through 0 intercept:----
 (cross_sma_0 <- sma(`Total wildness_maria`~ 0 + `Total wildness`,data = cross_UWS))
@@ -98,15 +104,10 @@ ggplot(data = cross_UWS,
   geom_abline(aes(slope =  cross_reg$coefficients[2],
                       intercept =  cross_reg$coefficients[1],
                       col = "lm",linetype = "free")) +
-  geom_abline(aes(slope = cross_reg_0$coefficients, intercept = 0,
-              col = "lm",linetype = "via0")) +
-  geom_abline(aes(slope = cross_sma$groupsummary$Slope,
+   geom_abline(aes(slope = cross_sma$groupsummary$Slope,
               intercept = cross_sma$groupsummary$Int,
               col = "sma",linetype = "free")) +
-  geom_abline(aes(slope = cross_sma_0$groupsummary$Slope,
-              intercept = 0,
-              col = "sma", linetype = "via0")) +
-  scale_linetype_manual(name = "Intercept", values = c("free" = "solid", "via0" = "dashed")) + 
+   scale_linetype_manual(name = "Intercept", values = c("free" = "solid", "via0" = "dashed")) + 
   scale_color_manual(name = "Models", values = c("lm" = "darkblue", "sma" = "red")) + 
   ylim (0,5) + xlim (0,5) +
   theme_minimal()

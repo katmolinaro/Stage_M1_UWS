@@ -50,21 +50,6 @@ cor.test( transect_indices$`Total wildness_google`,
           method = 'spearman')
 
 
-#RESCORED ----
-
-## Regression lineaire google vs field ----
-
-ggplot(data = transect_indices,
-       mapping = aes(x = `Total wildness`, y = `Total wildness_field`)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept =0 ) + 
-  ylim (0,5) + xlim (0,5)
-
-## test de correlation de spearman (correlation des rangs) ----
-cor.test( transect_indices$`Total wildness`, 
-          transect_indices$`Total wildness_field`,
-          method = 'spearman')
-
 
 
 

@@ -12,6 +12,8 @@ library(DHARMa)
 library(lme4)
 library(lmerTest)
 
+# Load UWS function
+source("R/UWS function.R")
 
 # import and clean data ----
 
