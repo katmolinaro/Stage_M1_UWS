@@ -47,11 +47,16 @@ names(Fifth) = column_names$Column_corr
 ## bind all data tables together: ----
 UWS_Paris <- rbind(Ivry,Neuilly,Seven,Nineteen,Fifth)
 
+## Recalculate UWS scores ----
+UWS_Paris <- cbind(UWS_Paris, calc_uws(UWS_Paris))
+
+## check: 
+# plot(UWS_Paris$UWS, UWS_Paris$`Total wildness`)  # perfect!
+
 
 ## create unique id ----
 UWS_Paris <- UWS_Paris %>%
   mutate( ID_site = paste(toupper(str_sub(Arr, 1,3)), Sites, sep = "_"))
-
 
 ## Extract coordinates into two columns ----
 UWS_Paris <- separate (UWS_Paris, col = Coords, into = c("Latitude", "Longitude"), sep = ",")
