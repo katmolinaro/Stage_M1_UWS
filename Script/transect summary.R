@@ -56,6 +56,17 @@ transect_indices <- transect_indices %>%
          sp_density = richness/area)
 
 
+#change for buf ----
+
+transect_indices <- transect_indices %>%
+  mutate(richness = if_else(Code_trottoir == "5E_BUF", 66, richness))
+
+#26+40=66
+
+#nvm we gonna exculde buf
+
+transect_indices <- transect_indices[transect_indices$Code_trottoir != "5E_BUF", ]
+
 #Clean environment ----
 rm(richness)
 
