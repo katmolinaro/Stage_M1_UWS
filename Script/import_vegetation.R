@@ -34,8 +34,14 @@ veg_survey <- veg_survey %>%
 
 veg_transect <- veg_transect %>%
   mutate(informal = (Caniveau + Fissure_de_bas_de_mur +Murs + Joints_de_transition + Chemins + Autres),
-         formal = (`Pied_d'arbre_isolé` + Pelouse_arbre + Pelouse_Sans + Massif_arbre + Massif_sans) )
+         formal = (`Pied_d'arbre_isolé` + Pelouse_arbre + Pelouse_Sans + Massif_arbre + Massif_sans),
+         nb_habitats = (Caniveau + Fissure_de_bas_de_mur +Murs + Joints_de_transition + Chemins + Autres +
+                          `Pied_d'arbre_isolé` + Pelouse_arbre + Pelouse_Sans + Massif_arbre + Massif_sans)
+         )
 
+# # Description nombres d'habitats:
+# hist(veg_transect$nb_habitats, breaks = 1:7)
+# mean(veg_transect$nb_habitats)
+# sd(veg_transect$nb_habitats)
 
-hist(veg_transect$formal)
 

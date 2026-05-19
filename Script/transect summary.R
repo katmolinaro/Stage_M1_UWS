@@ -26,6 +26,7 @@ richness <- veg_survey %>%
   summarise(richness_formal = n()) %>% 
   right_join(richness, by = "Code_trottoir")
 
+
 # Left join different indices to transect dataframe ----
 
 transect_indices <- veg_transect %>%

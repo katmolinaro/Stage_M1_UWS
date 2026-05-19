@@ -7,7 +7,35 @@ library(ggplot2)
 library(glmmTMB)
 
 
-# Courbe aire-espèces  ####
+# General richness of sidewalks ----
+
+
+## Richesse par arrondissement communes ----
+f = lm(richness_wild  ~ Arr_field ,
+            data = transect_indices )
+summary(f)
+
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = as.factor(Arr_field),
+                              y = richness_wild
+                )
+) +
+  geom_boxplot()
+
+
+f = lm(richness  ~ Arr_field ,
+       data = transect_indices )
+summary(f)
+
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = as.factor(Arr_field),
+                              y = richness
+                )
+) +
+  geom_boxplot()
+
+
+## Courbe aire-espèces  ####
 
 ## Tendance générale 
 ggplot2::ggplot(data = transect_indices) +
@@ -17,8 +45,7 @@ ggplot2::ggplot(data = transect_indices) +
              shape = 1) +
   geom_smooth(mapping = aes(x = area,
                             y = richness),
-              method = "gam",
-              linetype = "dashed", colour = "black") +
+              method = "gam", colour = "black") +
   theme_bw()
 
 
@@ -32,40 +59,224 @@ ggplot2::ggplot(data = transect_indices) +
               linetype = "solid", colour = "black") +
   theme_bw()
 
-# Relationships within vegetation types :
+
+## Relationships within vegetation types ----
+
 ggplot2::ggplot(data = transect_indices,
-                mapping = aes(x = area,
-                              y = richness,
-                              colour = as.factor(Type_field))) +
-  geom_point() +
-  geom_smooth( method = "lm") +
-  theme_bw()
+                mapping = aes(x = as.factor(Type_field),
+                              y = richness
+                )
+) +
+  geom_boxplot()
+
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = as.factor(Type_field),
+                              y = area
+                )
+) +
+  geom_boxplot()
+
+f = lm(richness ~ as.factor(formal),
+       data = transect_indices )
+summary(f)
+anova(f)
 
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = area,
                               y = richness_wild,
                               colour = as.factor(Type_field))) +
   geom_point() +
-  geom_smooth(method = "lm", na.rm = TRUE ) +
+  geom_smooth( method = "lm") +
   theme_bw()
 
 
+# Effet du nombre d'habitats
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = as.factor(informal),
+                              y = richness_wild)) +
+  geom_boxplot() 
+  theme_bw()
 
 
+  
+  
+
+  
+# Richness and income ----
+  
+# Wild richness vs income
+  ggplot2::ggplot(data = transect_indices,
+                  mapping = aes(x = X_revenus_m,
+                                y = richness_wild
+                  )
+  ) +
+    geom_point() +
+    geom_smooth(method = "lm")
+
+  f = lm(richness_wild  ~ `X_revenus_m` ,
+         data = transect_indices )
+  summary(f)
+  
+  # Tendance par arrondissement: 
+  ggplot2::ggplot(data = transect_indices,
+                  mapping = aes(x = X_revenus_m,
+                                y = richness_wild,
+                                colour = Arr_field
+                  )
+  ) +
+    geom_point() +
+    geom_smooth(method = "lm")
+  
+  #En fait la tendance générale est neutre parcequ'il y a deux tendances parfaitement opposées dans chaque arrondissement
+  
+  f = lm(richness_wild  ~ X_revenus_m * Arr_field ,
+         data = transect_indices )
+  summary(f)
+
+  f = lm(richness_wild  ~ X_revenus_m ,
+         data = filter(transect_indices, Arr_field == "19e" ))
+  summary(f)
+  f = lm(richness_wild  ~ X_revenus_m ,
+         data = filter(transect_indices, Arr_field == "7e" ))
+  summary(f)
+  
+  
+  # Tendance par type de trottoir
+  ggplot2::ggplot(data = transect_indices,
+                  mapping = aes(x = X_revenus_m,
+                                y = richness_wild,
+                                colour = as.factor(Type_field)
+                  )
+  ) +
+    geom_point() +
+    geom_smooth(method = "lm")
+  
+  f = lm(richness_wild  ~ X_revenus_m * as.factor(Type_field) ,
+         data = transect_indices )
+  summary(f)
+  
+  f = lm(richness_wild  ~ X_revenus_m ,
+         data = filter(transect_indices, Type_field ==1 ))
+  summary(f)
+  f = lm(richness_wild  ~ X_revenus_m ,
+         data = filter(transect_indices, Type_field ==2 ))
+  summary(f)
+   
+  
 # Richness and UWS field ----
 
-## Graph ----
-### Graph sur tout paris ----
+## Richness wild as a funciton of UWS scores ---
 
-# ggplot2::ggplot(data = transect_indices,
-#                 mapping = aes(x = richness,
-#                               y = `Total wildness_field`
-#                 )
-# ) +
-#   geom_point() +
-#   geom_smooth(method = "lm")
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = `Total wildness_field`,
+                              y = richness_wild
+                )
+) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+    theme_bw()
+  
+## Test modèles différents ----
+  
+  # Linear model # the choice!
+  f1 = lm(richness_wild  ~ `Total wildness_field` , 
+          data = transect_indices  )
+  summary(f1)
+  plot(DHARMa::simulateResiduals(f1))
+  
+  # poisson distribution
+  f1_pois = glm(`richness_wild`  ~ `Total wildness_field` , 
+                data = transect_indices, 
+                family = poisson  )
+  summary(f1_pois)
+  plot(DHARMa::simulateResiduals(f1_pois))
+  # pas terrible avec poisson
+  
+  # Negative binomial distribution
+  f1_nbinom = glmmTMB(`richness_wild`  ~ `Total wildness_field` , 
+                data = transect_indices, 
+                family = nbinom1  )
+  summary(f1_nbinom)
+  plot(DHARMa::simulateResiduals(f1_nbinom))
+  
 
-#et richness en fonction UWS
+  ### Effet des types de vegetation : ----
+  ggplot2::ggplot(data = transect_indices,
+                  mapping = aes(x = `Total wildness_field`,
+                                y = richness_wild,
+                                colour = as.factor(Type_field)
+                  )
+  ) +
+    geom_point() +
+    geom_smooth(method = "lm")
+  
+  f = lm(richness_wild  ~  as.factor(Type_field)*`Total wildness_field` , 
+          data = transect_indices  )
+  summary(f)
+  anova(f)
+  # les deux variables ont un effet significatif mais l'interaction n'est pas significative (= pas de différence de pente)
+  
+  ### Effet de l'arrondissement : ----
+  ggplot2::ggplot(data = transect_indices,
+                  mapping = aes(x = `Total wildness_field`,
+                                y = richness_wild,
+                                colour = as.factor(Arr_field)
+                  )
+  ) +
+    geom_point() +
+    geom_smooth(method = "lm")
+  
+  f = lm(richness_wild  ~  as.factor(Arr_field)*`Total wildness_field` , 
+         data = transect_indices  )
+  summary(f)
+  anova(f)
+  # la tendance reste stable (meme pente) entre les deux arrondissements.
+  
+#### density ----
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = `Total wildness_field`,
+                              y = sp_density
+                )
+) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+  ggplot2::ggplot(data = transect_indices,
+                  mapping = aes(x = `Total wildness_field`,
+                                y = sp_density
+                  )
+  ) +
+    geom_point() +
+    geom_smooth(method = "lm")
+  
+  ggplot2::ggplot(data = transect_indices,
+                  mapping = aes(x = `Total wildness_field`,
+                                y = sp_density
+                  )
+  ) +
+    geom_point() +
+    geom_smooth(method = "lm")
+  
+  # densité avec interaction arrondissement
+  f = lm(sp_density  ~ `Total wildness_field` , 
+          data = transect_indices  )
+  summary(f)
+  plot(DHARMa::simulateResiduals(f))
+  
+  f = lm(sp_density ~  as.factor(Arr_field)*`Total wildness_field` , 
+         data = transect_indices  )
+  summary(f)
+  anova(f)
+  
+  # densité avec interaction arrondissement
+  f = lm(sp_density  ~ as.factor(Type_field)*`Total wildness_field` , 
+          data = transect_indices  )
+  summary(f)
+  anova(f)
+  
+  # Pas d'effet d'interaction avec Arrondissement ou bien type de trottoir
+  
+####with horticultural plants ----
 
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = `Total wildness_field`,
@@ -75,35 +286,6 @@ ggplot2::ggplot(data = transect_indices,
   geom_point() +
   geom_smooth(method = "lm")
 
-#### density ----
-ggplot2::ggplot(data = transect_indices,
-                mapping = aes(x = `Total wildness_field`,
-                              y = sp_density,
-                              colour = as.factor(Type_field)
-                )
-) +
-  geom_point() +
-  geom_smooth(method = "lm")
-
-
-#### wild (non-horticultural) ----
-
-ggplot2::ggplot(data = transect_indices,
-                mapping = aes(x = `Total wildness_field`,
-                              y = richness_wild
-                )
-) +
-  geom_point() +
-  geom_smooth(method = "lm")
-
-ggplot2::ggplot(data = transect_indices,
-                mapping = aes(x = `Total wildness_field`,
-                              y = richness_wild,
-                              colour = as.factor(Type_field)
-                )
-) +
-  geom_point() +
-  geom_smooth(method = "lm")
 
 
 ### Graph par quartier ----
@@ -151,20 +333,6 @@ ggplot2::ggplot(data = transect_indices,
   geom_point() +
   geom_smooth(method = "lm")
 
-## Test modèle linéaire simple ----
-
-f1 = lm(`richness`  ~ `Total wildness_field` , 
-              data = transect_indices  )
-summary(f1)
-plot(DHARMa::simulateResiduals(f1))
-
-
-f1_pois = glm(`richness`  ~ `Total wildness_field` , 
-         data = transect_indices, 
-         family = poisson  )
-summary(f1_pois)
-plot(DHARMa::simulateResiduals(f1_pois))
-# pas terrible avec poisson
 
 
 
@@ -199,32 +367,6 @@ f1_pois = glm(richness_wild  ~ `Total wildness_field` ,
 summary(f1_pois)
 plot(DHARMa::simulateResiduals(f1_pois))
 
-
-
-
-# Richness and income ----
-
-## Graph ----
-
-ggplot2::ggplot(data = transect_indices,
-                mapping = aes(x = X_revenus_m,
-                              y = richness
-                )
-) +
-  geom_point() +
-  geom_smooth(method = "lm")
-
-
-ggplot2::ggplot(data = transect_indices,
-                mapping = aes(x = X_revenus_m,
-                              y = richness,
-                              colour = Arr_field
-                )
-) +
-  geom_point() +
-  geom_smooth(method = "lm")
-
-#En fait la tendance générale est neutre parcequ'il y a deux tendances parfaitement opposées dans chaque arrondissement
 
 
 ## Test richesse----
@@ -321,15 +463,6 @@ anova(f1_inc,f4)
 
 
 ## Test richesse WILD----
-### Test linéaire simple ----
-f1_arr = lm(richness_wild  ~ Arr_field ,
-            data = transect_indices )
-summary(f1_arr)
-
-f1_inc = lm(richness_wild  ~ `X_revenus_m` ,
-            data = filter(transect_indices, !is.na(X_revenus_m) ) )
-summary(f1_inc)
-
 f1_wil = lm(`richness_wild`  ~ `Total wildness_field` , 
             data = filter(transect_indices, !is.na(X_revenus_m) ) )
 summary(f1_wil)
@@ -376,23 +509,8 @@ anova(f1_inc,f4)
 
 
 
-# Richness formal and informal ----
 
 
-
-
-
-
-# Richness and vegetalisation ----
-
-# TODO: tester aussi comptage des habitats formels
-
-ggplot2::ggplot(data = transect_indices,
-                mapping = aes(x = as.factor(Type_field),
-                              y = richness
-                )
-) +
-  geom_boxplot()
 
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = as.factor(Type_field),
