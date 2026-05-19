@@ -1,14 +1,23 @@
 #import data of the re-done uws google of the field points
 
-rescoring = read_excel(path = "Raw/redo_uws_google.xlsx",
+nin = read_excel(path = "Raw/redo_uws_google.xlsx",
                   sheet = "19th",
                   skip = 1)
-names(rescoring) = column_names$Column_corr
+names(nin) = column_names$Column_corr
+
+sev = read_excel(path = "Raw/redo_uws_google.xlsx",
+                 sheet = "7th",
+                 skip = 1)
+names(sev) = column_names$Column_corr
+
+#bind the two sheets
+
+rescoring <- rbind(nin, sev)
 
 # create id
 
 rescoring <- rescoring %>%
-  mutate( ID_site = paste(toupper(str_sub(Arr, 1,3)), Sites, sep = "_"))
+  mutate( ID_site = paste(toupper(str_sub(Arr, 1,3)), toupper(str_sub(Sites, 1,3)), sep = "_"))
 
 # extract coord
 
@@ -24,8 +33,10 @@ rescoring_iris <- st_join(rescoring_iris,
                           IRIS_DATA,
                           left = TRUE)
 
+# clean environment ----
 # Compare old and new scores ----
 
+rm(nin, sev)
 
 # Add recored values to original data
 rescored_UWS <- uws_paris_iris %>%

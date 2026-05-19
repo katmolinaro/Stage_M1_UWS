@@ -50,6 +50,69 @@ cor.test( transect_indices$`Total wildness_google`,
           method = 'spearman')
 
 
+#RESCORED ----
+
+## Regression lineaire rescored vs field ----
+
+ggplot(data = transect_indices,
+       mapping = aes(x = `Total wildness`, y = `Total wildness_field`)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept =0 ) + 
+  ylim (0,5) + xlim (0,5)
+
+## test de correlation de spearman (correlation des rangs) ----
+cor.test( transect_indices$`Total wildness`, 
+          transect_indices$`Total wildness_field`,
+          method = 'spearman')
+
+
+## Rescored vs google ----
+
+ggplot(data = transect_indices,
+       mapping = aes(x = `Total wildness`, y = `Total wildness_google`)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept =0 ) + 
+  ylim (0,5) + xlim (0,5)
+
+#test de correlation
+
+cor.test( transect_indices$`Total wildness`, 
+          transect_indices$`Total wildness_google`,
+          method = 'spearman')
 
 
 
+# DATE ANALYSE ----
+
+## transform ----
+
+# uws_date <- filter(transect_indices, Date != is.na(transect_indices$Date_rescored))
+
+uws_date <- transect_indices
+
+uws_date <- separate (uws_date, col = Date_rescored, into = c("month", "year"), sep = " ")
+
+
+## graph ----
+
+# ggplot(data = uws_date,
+#        mapping = aes(x = as.factor(year),
+#                      y = `Total wildness`,
+#                      color = year ))+
+#   geom_boxplot()
+
+ggplot(data = uws_date,
+       mapping = aes(x = `Total wildness`, y = `Total wildness_field`, colour = year)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept =0 ) + 
+  ylim (0,5) + xlim (0,5)
+
+## check autre graph
+
+uws_date_v2 <- pivot_longer(uws_date, cols = c("Total wildness_field", "Total wildness"), names_to = "Traitement", values_to = "Total_wildness")
+
+ggplot(data = uws_date_v2,
+       mapping = aes(x = as.factor(year),
+                     y = `Total_wildness`,
+                     color = Traitement ))+
+  geom_boxplot()

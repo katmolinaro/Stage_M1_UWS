@@ -12,8 +12,8 @@ uws_iris_clean <- uws_paris_iris %>%
   )
 
 # Check the number of lines 
-cat("Number of lines before the filter :", nrow(uws_paris_iris), "\n")
-cat("Number of lines after the filter :", nrow(uws_iris_clean), "\n")
+# cat("Number of lines before the filter :", nrow(uws_paris_iris), "\n")
+# cat("Number of lines after the filter :", nrow(uws_iris_clean), "\n")
 
 # Vizualise distribtuion of scores ----
 
@@ -60,6 +60,7 @@ TukeyHSD(f1a)
 # comparaison
 f1a = lm(`Total wildness`  ~ Arr , 
           data = uws_iris_clean )
+summary(f1a)
 
 f1b = lm(`Total wildness`  ~ `X_revenus_m` , 
      data = uws_iris_clean )
@@ -70,6 +71,14 @@ f2 = lm(`Total wildness`  ~ `X_revenus_m` + Arr  ,
 summary(f2)
 anova(f2)
 
+f2b = lm(`Total wildness`  ~ Arr +  `X_revenus_m` , 
+        data = uws_iris_clean )
+summary(f2b)
+
+f3b = lm(`Total wildness` ~  Arr *  `X_revenus_m` , 
+        data = uws_iris_clean )
+summary(f3b)
+
 f3 = lm(`Total wildness` ~  `X_revenus_m`*Arr , 
         data = uws_iris_clean )
 summary(f3)
@@ -78,31 +87,40 @@ anova(f3)
 plot(f3)
 hist(residuals(f3))
 
-
+anova(f1a,f2b,f3b)
 anova(f1b,f2,f3)
 
 # test modèle linéaire mixte
-f0 = lme4::lmer(`Total wildness`  ~ 1 + (1|Arr) , 
+f0m = lme4::lmer(`Total wildness`  ~ 1 + (1|Arr) , 
                  data = uws_iris_clean )
+# summary(f0)
 
-f1 = lme4::lmer(`Total wildness`  ~ `X_revenus_m` + (1|Arr) , 
+
+f1m = lme4::lmer(`Total wildness`  ~ `X_revenus_m` + (1|Arr) , 
           data = uws_iris_clean )
 
-summary(f1) =
+summary(f1)
+# 
+# f2m = lme4::lmer(`Total wildness`  ~ `X_revenus_m` * (1|Arr) , 
+#                 data = uws_iris_clean )
+# summary(f1a) 
 
-f1 = lme4::lmer(`Total wildness`  ~ `X_revenus_m` + (1|Arr) , 
-                data = uws_iris_clean )
-summary(f1a) 
+anova(f0m, f1m)
 
-anova(f0, f1)
-
-plot(DHARMa::simulateResiduals(f1))
-plot(f1)
+plot(DHARMa::simulateResiduals(f1m))
+plot(f1m)
 
 
 # Effet de la vegetalisation ----
 
-ggplot2::ggplot(data = uws_iris_clean,
+##filter to only have 1 and 2 in types ----
+
+uws_vegeza <- filter(.data = uws_iris_clean,
+                    Type != c("0"))
+
+## graph ----
+
+ggplot2::ggplot(data = uws_vegeza,
                 mapping = aes(x = as.factor(Type),
                               y = `Total wildness`,
                               colour = Arr
@@ -110,7 +128,39 @@ ggplot2::ggplot(data = uws_iris_clean,
 ) +
   geom_boxplot(varwidth = TRUE) +
   facet_wrap('Arr')
-  
+
+
+ggplot(data = uws_vegeza,
+       mapping = aes(x = as.factor(Type),
+                     y = `Total wildness`,
+                     color = Type ))+
+  geom_boxplot()
+
+## test
+
+var.test(uws_vegeza$`Total wildness`~ uws_vegeza$Type)
+# p-value = 0.5867
+
+t.test(uws_vegeza$`Total wildness`~ uws_vegeza$Type, var.equal = T)
+
+
+# # DATE ANALYSE ----
+# 
+# ## transform ----
+# 
+# uws_date <- filter(uws_iris_clean, Date != is.na(uws_iris_clean$Date))
+# 
+# uws_date <- separate (uws_date, col = Date, into = c("month", "year"), sep = " ")
+# 
+# 
+# ## graph ----
+# 
+# ggplot(data = uws_date,
+#        mapping = aes(x = as.factor(year),
+#                      y = `Total wildness`,
+#                      color = year ))+
+#   geom_boxplot()
+# 
 
 
 

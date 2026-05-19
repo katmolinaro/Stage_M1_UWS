@@ -131,6 +131,7 @@ hist(f1$residuals)
 f1 = lm(richness_wild  ~ `Total wildness_field` , 
         data = transect_indices  )
 summary(f1)
+hist(f1$residuals)
 plot(DHARMa::simulateResiduals(f1))
 
 #p-value = 0.0001883 !!!!!!!!!
@@ -169,29 +170,30 @@ ggplot2::ggplot(data = transect_indices,
 #En fait la tendance générale est neutre parcequ'il y a deux tendances parfaitement opposées dans chaque arrondissement
 
 
-## Test ----
+## Test richesse----
 ### Test linéaire simple ----
-f_arr = lm(richness  ~ Arr_field ,
+f1_arr = lm(richness  ~ Arr_field ,
           data = transect_indices )
-summary(f1a)
+summary(f1_arr)
 
-### tester effet revenus
+f1_inc = lm(richness  ~ `X_revenus_m` ,
+            data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f1_inc)
 
-f1 = lm(`richness`  ~ `Total wildness_field` , 
+f1_wil = lm(`richness`  ~ `Total wildness_field` , 
         data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f1_wil)
 
-f1b = lm(richness  ~ `X_revenus_m` ,
-         data = transect_indices )
-summary(f1b)
+### ajoute les effets revenus ----
 
 f2 = lm(richness  ~ `Total wildness_field` + X_revenus_m   ,
-        data = transect_indices )
+        data = filter(transect_indices, !is.na(X_revenus_m)) )
 summary(f2)
 anova(f2)
 
 
 f3 = lm(richness ~  `Total wildness_field`*`X_revenus_m` ,
-        data = transect_indices )
+        data = filter(transect_indices, !is.na(X_revenus_m) ) )
 summary(f3)
 anova(f3)
 
@@ -201,8 +203,8 @@ summary(f3b)
 anova(f3b)
 
 # comparaison de modèles
-anova(f1,f2,f3) 
-anova(f1,f3b)
+anova(f1_wil,f2,f3) 
+anova(f1_wil,f3b)
 
 # test de l'interaction possible entre revenus et arrondissement sur richesse
 
@@ -210,8 +212,111 @@ f4 = lm(richness ~ `X_revenus_m` * Arr_field ,
         data = transect_indices )
 summary(f4)
 anova(f4)
-anova(f1b,f4)
+anova(f1_inc,f4)
  # effet marginal
+
+
+
+## Test density----
+### Test linéaire simple ----
+f1_arr = lm(sp_density  ~ Arr_field ,
+            data = transect_indices )
+summary(f1_arr)
+
+f1_inc = lm(sp_density  ~ `X_revenus_m` ,
+            data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f1_inc)
+
+f1_wil = lm(`sp_density`  ~ `Total wildness_field` , 
+            data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f1_wil)
+
+### ajoute les effets revenus ----
+
+f2 = lm(sp_density  ~ `Total wildness_field` + X_revenus_m   ,
+        data = filter(transect_indices, !is.na(X_revenus_m)) )
+summary(f2)
+anova(f2)
+
+
+f3 = lm(sp_density ~  `Total wildness_field`*`X_revenus_m` ,
+        data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f3)
+anova(f3)
+
+f3b = lm(sp_density ~  `Total wildness_field`*Arr_field ,
+         data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f3b)
+anova(f3b)
+
+# comparaison de modèles
+anova(f1_wil,f2,f3) 
+anova(f1_wil,f3b)
+
+# test de l'interaction possible entre revenus et arrondissement sur richesse
+
+f4 = lm(sp_density ~ `X_revenus_m` * Arr_field ,
+        data = transect_indices )
+summary(f4)
+anova(f4)
+anova(f1_inc,f4)
+
+
+
+## Test richesse WILD----
+### Test linéaire simple ----
+f1_arr = lm(richness_wild  ~ Arr_field ,
+            data = transect_indices )
+summary(f1_arr)
+
+f1_inc = lm(richness_wild  ~ `X_revenus_m` ,
+            data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f1_inc)
+
+f1_wil = lm(`richness_wild`  ~ `Total wildness_field` , 
+            data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f1_wil)
+
+### ajoute les effets revenus ----
+
+f2 = lm(richness_wild  ~ `Total wildness_field` + X_revenus_m   ,
+        data = filter(transect_indices, !is.na(X_revenus_m)) )
+summary(f2)
+anova(f2)
+
+
+f3 = lm(richness_wild ~  `Total wildness_field`*`X_revenus_m` ,
+        data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f3)
+anova(f3)
+
+f3b = lm(richness_wild ~  `Total wildness_field`*Arr_field ,
+         data = filter(transect_indices, !is.na(X_revenus_m) ) )
+summary(f3b)
+anova(f3b)
+
+# comparaison de modèles
+anova(f1_wil,f2,f3) 
+anova(f1_wil,f3b)
+
+# test de l'interaction possible entre revenus et arrondissement sur richesse
+
+f4 = lm(richness_wild ~ `X_revenus_m` * Arr_field ,
+        data = transect_indices )
+summary(f4)
+anova(f4)
+anova(f1_inc,f4)
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Richness formal and informal ----
