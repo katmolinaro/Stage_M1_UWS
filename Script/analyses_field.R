@@ -6,6 +6,52 @@ library(lmerTest)
 library(ggplot2)
 library(glmmTMB)
 
+
+# Courbe aire-espèces  ####
+
+## Tendance générale 
+ggplot2::ggplot(data = transect_indices) +
+  geom_point(mapping = aes(x = area,
+                           y = richness,
+                           colour = as.factor(Type_field)),
+             shape = 1) +
+  geom_smooth(mapping = aes(x = area,
+                            y = richness),
+              method = "gam",
+              linetype = "dashed", colour = "black") +
+  theme_bw()
+
+
+ggplot2::ggplot(data = transect_indices) +
+  geom_point(mapping = aes(x =area,
+                           y = richness_wild,
+                           colour = as.factor(Type_field))) +
+  geom_smooth(mapping = aes(x = area,
+                            y = richness_wild),
+              method = "gam",
+              linetype = "solid", colour = "black") +
+  theme_bw()
+
+# Relationships within vegetation types :
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = area,
+                              y = richness,
+                              colour = as.factor(Type_field))) +
+  geom_point() +
+  geom_smooth( method = "lm") +
+  theme_bw()
+
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = area,
+                              y = richness_wild,
+                              colour = as.factor(Type_field))) +
+  geom_point() +
+  geom_smooth(method = "lm", na.rm = TRUE ) +
+  theme_bw()
+
+
+
+
 # Richness and UWS field ----
 
 ## Graph ----
@@ -32,7 +78,8 @@ ggplot2::ggplot(data = transect_indices,
 #### density ----
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = `Total wildness_field`,
-                              y = sp_density
+                              y = sp_density,
+                              colour = as.factor(Type_field)
                 )
 ) +
   geom_point() +
@@ -48,6 +95,16 @@ ggplot2::ggplot(data = transect_indices,
 ) +
   geom_point() +
   geom_smooth(method = "lm")
+
+ggplot2::ggplot(data = transect_indices,
+                mapping = aes(x = `Total wildness_field`,
+                              y = richness_wild,
+                              colour = as.factor(Type_field)
+                )
+) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
 
 ### Graph par quartier ----
 

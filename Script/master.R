@@ -35,8 +35,7 @@ source("Script/import_UWS_field.R")
 source("Script/import_vegetation.R")
 
 ## Rescoring
-
-source("Script/import_rescoring.R")
+ source("Script/import_rescoring.R")
 
 # Transform data ----
 

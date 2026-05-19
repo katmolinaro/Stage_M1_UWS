@@ -11,7 +11,6 @@ species <- sort(unique(veg_survey$Especes))
 
 
 # Import metadata trottoir ----
-
 veg_transect = read_excel(path = "Raw/SDMR_FIELD.xlsx",
                         sheet = "transect",
                         skip = 1)
