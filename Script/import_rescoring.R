@@ -124,3 +124,4 @@ ggplot(data = rescored_UWS,
   scale_color_manual(name = "Models", values = c("lm" = "darkblue", "sma" = "red")) + 
   ylim (0,5) + xlim (0,5) +
   theme_minimal()
+
