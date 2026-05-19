@@ -11,9 +11,18 @@ library(glmmTMB)
 
 
 ## Richesse par arrondissement communes ----
-f = lm(richness_wild  ~ Arr_field ,
-            data = transect_indices )
-summary(f)
+
+# mean(transect_indices$richness_wild)
+# sd(transect_indices$richness_wild)
+
+nin <- filter(transect_indices, Arr_field == "19e")
+sev <- filter(transect_indices, Arr_field == "7e")
+
+mean(nin$richness_wild)
+sd(nin$richness_wild)
+mean(sev$richness_wild)
+sd(sev$richness_wild)
+
 
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = as.factor(Arr_field),
@@ -22,10 +31,17 @@ ggplot2::ggplot(data = transect_indices,
 ) +
   geom_boxplot()
 
-
-f = lm(richness  ~ Arr_field ,
-       data = transect_indices )
+f = lm(richness_wild  ~ Arr_field ,
+            data = transect_indices )
 summary(f)
+
+
+
+
+mean(nin$richness)
+sd(nin$richness)
+mean(sev$richness)
+sd(sev$richness)
 
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = as.factor(Arr_field),
@@ -33,6 +49,12 @@ ggplot2::ggplot(data = transect_indices,
                 )
 ) +
   geom_boxplot()
+
+f = lm(richness  ~ Arr_field ,
+       data = transect_indices )
+summary(f)
+
+
 
 
 ## Courbe aire-espèces  ####
@@ -62,12 +84,26 @@ ggplot2::ggplot(data = transect_indices) +
 
 ## Relationships within vegetation types ----
 
+#richesse wild en fonction vegetalisation --> significatif
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = as.factor(Type_field),
-                              y = richness
+                              y = richness_wild
                 )
 ) +
   geom_boxplot()
+
+noveg <- filter(transect_indices, Type_field == 1)
+veg <- filter (transect_indices, Type_field == 2)
+
+mean(noveg$richness_wild)
+sd(noveg$richness_wild)
+mean(veg$richness_wild)
+sd(veg$richness_wild)
+
+t.test(transect_indices$richness_wild~transect_indices$Type_field)
+
+
+# Surface en fonction vegetalsation --> Significatif 
 
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = as.factor(Type_field),
@@ -76,10 +112,16 @@ ggplot2::ggplot(data = transect_indices,
 ) +
   geom_boxplot()
 
-f = lm(richness ~ as.factor(formal),
+t.test(transect_indices$area~transect_indices$Type_field)
+
+
+#Richesse en fonciton des habitats formel ??
+f = lm(richness_wild ~ as.factor(formal),
        data = transect_indices )
 summary(f)
 anova(f)
+
+#richesse en fonciton de l'area
 
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = area,
@@ -90,11 +132,12 @@ ggplot2::ggplot(data = transect_indices,
   theme_bw()
 
 
+
 # Effet du nombre d'habitats
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = as.factor(informal),
                               y = richness_wild)) +
-  geom_boxplot() 
+  geom_boxplot() +
   theme_bw()
 
 
@@ -165,7 +208,7 @@ ggplot2::ggplot(data = transect_indices,
   
 # Richness and UWS field ----
 
-## Richness wild as a funciton of UWS scores ---
+## Richness wild as a funciton of UWS scores ----
 
 ggplot2::ggplot(data = transect_indices,
                 mapping = aes(x = `Total wildness_field`,
